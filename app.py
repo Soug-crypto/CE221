@@ -8,32 +8,26 @@ from streamlit_agraph import agraph, Node, Edge, Config
 import networkx as nx
 from sklearn.preprocessing import MinMaxScaler
 
-# --------------------------
 # Configuration
-# --------------------------
 st.set_page_config(
     page_title="Fluid Mechanics I",
     layout="wide",
     page_icon="💧"
 )
 
-# --------------------------
 # Session State Initialization
-# --------------------------
-if 'progress' not in st.session_state:
-    st.session_state.progress = {
-        "intro": False,
-        "properties": False,
-        "statics": False,
-        "dynamics": False,
-        "applications": False
-    }
+def init_session_state():
+    if 'progress' not in st.session_state:
+        st.session_state.progress = {
+            "intro": False,
+            "properties": False,
+            "statics": False,
+            "dynamics": False,
+            "applications": False
+        }
 
-# --------------------------
 # Validation Decorator
-# --------------------------
 def validate_positive(func):
-    """Decorator for positive number validation"""
     def wrapper(*args, **kwargs):
         try:
             for arg in args:
@@ -45,30 +39,23 @@ def validate_positive(func):
             return None
     return wrapper
 
-# --------------------------
 # Calculation Functions
-# --------------------------
 @validate_positive
 def hydrostatic_pressure(depth: float, density: float = 1000.0) -> float:
-    """Calculate hydrostatic pressure"""
     return density * 9.81 * depth
 
 @validate_positive
 def bernoulli_equation(p1: float, v1: float, z1: float, 
                       p2: float, v2: float, z2: float, 
                       density: float = 1000.0) -> float:
-    """Bernoulli equation with energy conservation check"""
     energy1 = p1 + 0.5*density*v1**2 + density*9.81*z1
     energy2 = p2 + 0.5*density*v2**2 + density*9.81*z2
     if abs(energy1 - energy2) > 1e-5:
         st.warning("Energy conservation violation - check inputs")
     return energy1 - energy2
 
-# --------------------------
 # Visualization Functions
-# --------------------------
 def plot_moody(Re: float, rel_roughness: float):
-    """Moody diagram visualization"""
     Re_laminar = np.linspace(1e3, 2e3, 100)
     f_laminar = 64 / Re_laminar
     
@@ -98,7 +85,6 @@ def plot_moody(Re: float, rel_roughness: float):
     st.plotly_chart(fig)
 
 def plot_bernoulli(diameter: float, velocity: float, elevation: float):
-    """Bernoulli equation visualization"""
     areas = np.linspace(0.5*diameter, 2*diameter, 50)
     velocities = velocity * (diameter**2) / (areas**2)
     pressures = 101325 + 0.5*1000*(velocity**2 - velocities**2) + 1000*9.81*elevation
@@ -116,7 +102,6 @@ def plot_bernoulli(diameter: float, velocity: float, elevation: float):
     st.plotly_chart(fig)
 
 def water_tower_design(required_pressure: float, fluid_density: float):
-    """Water tower design calculation"""
     height = required_pressure / (fluid_density * 9.81)
     
     fig = go.Figure(go.Indicator(
@@ -140,7 +125,6 @@ def water_tower_design(required_pressure: float, fluid_density: float):
     st.plotly_chart(fig)
 
 def pipeline_network():
-    """Pipeline network visualization"""
     G = nx.DiGraph()
     G.add_edges_from([("Reservoir", "Pump"), ("Pump", "Valve"), ("Valve", "City")])
     pos = nx.spring_layout(G)
@@ -162,11 +146,8 @@ def pipeline_network():
     
     st.plotly_chart(fig)
 
-# --------------------------
 # Application Sections
-# --------------------------
 def show_intro():
-    """Course introduction section"""
     st.header("Fluid Mechanics I (CE221)")
     st.subheader("University of Tripoli - Civil Engineering Department")
     
@@ -281,7 +262,6 @@ def show_intro():
     st.plotly_chart(fig)
 
 def show_properties():
-    """Fluid properties section"""
     st.header("Properties of Fluids")
     
     # Properties of Matter Comparison
@@ -466,7 +446,6 @@ def show_properties():
     st.plotly_chart(fig)
 
 def show_statics():
-    """Fluid statics section"""
     st.header("Fluid Statics")
     
     # Pressure Applications
@@ -572,7 +551,6 @@ def show_statics():
     st.plotly_chart(fig)
 
 def show_dynamics():
-    """Fluid dynamics section"""
     st.header("Fluid Dynamics Interactive Tools")
     
     tab1, tab2, tab3 = st.tabs(["Moody Diagram", "Bernoulli", "Continuity"])
@@ -732,7 +710,6 @@ def show_dynamics():
     st.plotly_chart(fig)
 
 def show_applications():
-    """Real-world applications section"""
     st.header("Engineering Applications")
     
     # Application Topics
@@ -971,7 +948,6 @@ def show_applications():
     st.plotly_chart(fig)
 
 def show_resources():
-    """Additional resources section"""
     st.header("Additional Resources")
     
     # Unit Conversion Calculator Enhancements
@@ -1131,10 +1107,9 @@ def show_resources():
     prefixes_df = pd.DataFrame(prefixes_data)
     st.dataframe(prefixes_df.style.set_properties(**{'text-align': 'left'}))
 
-# --------------------------
 # Main Application
-# --------------------------
 def main():
+    init_session_state()
     st.sidebar.title("Navigation")
     sections = {
         "Course Introduction": show_intro,
