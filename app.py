@@ -387,7 +387,7 @@ def show_properties():
                     """)
     
     st.subheader("🌐 3D Fluid Property Explorer")
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1, 4])
 
 
     with col1:
