@@ -619,45 +619,53 @@ def show_dynamics():
             fig = go.Figure()
             
             if device_type == "Orifice":
-                fig.add_shape(type="circle", x0=-beta, y0=-beta, x1=beta, y1=beta, 
-                            line=dict(color="red", width=2))
-                fig.add_shape(type="rect", x0=-1, y0=-1, x1=1, y1=1, 
-                            line=dict(color="blue", width=2))
+                orifice = fig.add_shape(type="circle", x0=-beta, y0=-beta, x1=beta, y1=beta, 
+                                    line=dict(color="red", width=2))
+                pipe = fig.add_shape(type="rect", x0=-1, y0=-1, x1=1, y1=1, 
+                                    line=dict(color="blue", width=2))
                 fig.add_annotation(x=0, y=1.3, text="Pipe", showarrow=False, font=dict(size=14))
                 fig.add_annotation(x=0, y=beta+0.1, text="Orifice", showarrow=False, font=dict(size=14))
+                
+                fig.update_traces(hoverinfo='name')
+                orifice.hovertemplate = 'Orifice<br>Area: %{x:.2f} m²'
+                pipe.hovertemplate = 'Pipe<br>Diameter: 1.0 m'
                 
             elif device_type == "Venturi":
                 x = np.linspace(-1, 1, 100)
                 y_upper = np.where(x < 0, 1, beta)
                 y_lower = np.where(x < 0, -1, -beta)
-                fig.add_trace(go.Scatter(x=x, y=y_upper, fill=None, 
-                                    mode='lines', line=dict(color='red', width=2)))
+                inlet = fig.add_trace(go.Scatter(x=x[x < 0], y=y_upper[x < 0], fill=None, 
+                                            mode='lines', line=dict(color='red', width=2), name='Inlet'))
+                throat = fig.add_trace(go.Scatter(x=x[x >= 0], y=y_upper[x >= 0], fill=None, 
+                                            mode='lines', line=dict(color='red', width=2), name='Throat'))
                 fig.add_trace(go.Scatter(x=x, y=y_lower, fill='tonexty', 
                                     mode='lines', line=dict(color='red', width=2)))
                 fig.add_annotation(x=-0.5, y=1.3, text="Inlet", showarrow=False, font=dict(size=14))
                 fig.add_annotation(x=0.5, y=beta+0.1, text="Throat", showarrow=False, font=dict(size=14))
                 
+                fig.update_traces(hoverinfo='name+text')
+                inlet.hovertemplate = 'Inlet<br>Diameter: 1.0 m'
+                throat.hovertemplate = f'Throat<br>Diameter: {beta:.2f} m'
+                
             else:  # Rotameter
-                fig.add_shape(type="path", 
-                            path="M 0,0 Q 0.5,1 1,0.5 L 1,-0.5 Q 0.5,-1 0,0 Z",
-                            fillcolor="rgba(255,0,0,0.3)", line=dict(color="red", width=2))
-                fig.add_shape(type="line", x0=0, y0=0, x1=1, y1=0, line=dict(color="black", width=2))
+                tube = fig.add_shape(type="path", 
+                                path="M 0,0 Q 0.5,1 1,0.5 L 1,-0.5 Q 0.5,-1 0,0 Z",
+                                fillcolor="rgba(255,0,0,0.3)", line=dict(color="red", width=2))
+                float_valve = fig.add_shape(type="line", x0=0, y0=0, x1=1, y1=0, line=dict(color="black", width=2))
                 fig.add_annotation(x=0.5, y=0, text="Float Position", showarrow=True, arrowhead=1, 
                                 font=dict(size=14), ay=-30)
+                
+                fig.update_traces(hoverinfo='name')
+                tube.hovertemplate = 'Tube<br>Diameter: 1.0 m'
+                float_valve.hovertemplate = f'Float Position: {float_pos:.2f} m'
                 
             fig.update_layout(
                 width=600, height=500,
                 xaxis_range=[-1.5, 1.5], yaxis_range=[-1.5, 1.5],
                 xaxis_visible=False, yaxis_visible=False,
-                annotations=[
-                    dict(
-                        text=f"{device_type} Meter",
-                        xref="paper", yref="paper",
-                        x=0.5, y=1.05,
-                        showarrow=False,
-                        font=dict(size=16)
-                    )
-                ]
+                title=f"{device_type} Meter",
+                title_x=0.5,
+                hovermode='closest'
             )
             st.plotly_chart(fig, use_container_width=True)
 
