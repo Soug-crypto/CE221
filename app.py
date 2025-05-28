@@ -389,13 +389,11 @@ def show_properties():
     st.subheader("🌐 3D Fluid Property Explorer")
     col1, col2 = st.columns(2)
 
-    # Fluid selection
-    fluid = st.sidebar.selectbox("Select Fluid", ["Water", "Air", "Oil"])
 
     with col1:
         temperature = st.slider("Temperature (°C)", 0, 100, 25)
         pressure = st.slider("Pressure (atm)", 1, 10, 1)
-        fluid = st.sidebar.selectbox("Select Fluid", ["Water", "Air", "Oil"], key="fluid_selector")
+        fluid = st.selectbox("Select Fluid", ["Water", "Air", "Oil"], key="fluid_selector")
 
     with col2:
         # Create grid of temperature and pressure values
