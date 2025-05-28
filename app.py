@@ -481,7 +481,7 @@ def show_statics():
                             showarrow=False, font=dict(color="white", size=14))
             fig.update_layout(
                 height=300,
-                yaxis=dict(range=[0, max(1, height*1.2)], 
+                yaxis=dict(range=[0, max(1, height*1.2)]), 
                 xaxis=dict(visible=False),
                 margin=dict(l=20, r=20, t=30, b=20)
             )
