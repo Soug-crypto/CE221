@@ -389,7 +389,6 @@ def show_properties():
     st.subheader("🌐 3D Fluid Property Explorer")
     col1, col2 = st.columns([1, 4])
 
-
     with col1:
         temperature = st.slider("Temperature (°C)", 0, 100, 25)
         pressure = st.slider("Pressure (atm)", 1, 10, 1)
@@ -412,7 +411,13 @@ def show_properties():
             # Simplified oil density model
             density = 850 * (1 - (T * 0.0001) + (P * 0.0005))
 
-        fig = go.Figure(data=[go.Surface(z=density, x=temp_grid, y=press_grid, colorscale='Viridis')])
+        fig = go.Figure(data=[go.Surface(
+            z=density,
+            x=temp_grid,
+            y=press_grid,
+            colorscale='Viridis',
+            hovertemplate='Temperature: %{x} °C<br>Pressure: %{y} atm<br>Density: %{z} kg/m³'
+        )])
         fig.update_layout(
             title=f"{fluid} Density Variation",
             scene=dict(
