@@ -706,39 +706,9 @@ def show_resources():
                 st.success(f"✅ {value} {from_unit} = {result:.4f} {to_unit}")
             except KeyError:
                 st.error("🚨 Conversion not supported for selected units")
-            
+        
     with tab2:
         st.subheader("🧮 Formula Reference")
-        
-        # Custom CSS for better UI
-        st.markdown("""
-        <style>
-            .formula-container {
-                border: 1px solid #e0e0e0;
-                border-radius: 8px;
-                padding: 15px;
-                margin-bottom: 20px;
-                background-color: #f8f9fa;
-            }
-            .formula-title {
-                color: #2c3e50;
-                font-size: 18px;
-                margin-top: 0;
-            }
-            .formula-equation {
-                background-color: white;
-                padding: 15px;
-                border-radius: 5px;
-                margin: 15px 0;
-            }
-            .calculator-title {
-                color: #3498db;
-                font-size: 16px;
-                margin-top: 20px;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-        
         formula = st.selectbox("Select Formula", [
             "Bernoulli's Equation",
             "Hydrostatic Pressure",
@@ -746,201 +716,171 @@ def show_resources():
             "Reynolds Number",
             "Darcy-Weisbach Equation"
         ])
-        
+
         if formula == "Bernoulli's Equation":
-            with st.container():
-                st.markdown('<div class="formula-container">', unsafe_allow_html=True)
-                st.markdown('<h3 class="formula-title">Bernoulli\'s Equation</h3>', unsafe_allow_html=True)
-                st.markdown(r"""
-                <div class="formula-equation">
-                    $$
-                    P_1 + \frac{1}{2}\rho v_1^2 + \rho g z_1 = P_2 + \frac{1}{2}\rho v_2^2 + \rho g z_2
-                    $$
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.markdown("**Application:** Fluid flow energy conservation")
-                
-                st.markdown("**Variables:**")
-                st.markdown("- \(P\) = Pressure (Pa)")
-                st.markdown("- \(\rho\) = Fluid density (kg/m³)")
-                st.markdown("- \(v\) = Flow velocity (m/s)")
-                st.markdown("- \(z\) = Elevation (m)")
-                st.markdown("- \(g\) = Gravitational acceleration (9.81 m/s²)")
-                
-                st.markdown("**Key Concept:** The sum of pressure energy, kinetic energy, and potential energy remains constant in an ideal fluid flow.")
-                
-                st.markdown("**Real-world Applications:**")
-                st.markdown("- Airfoil lift generation")
-                st.markdown("- Venturi tube flow measurement")
-                st.markdown("- Blood flow dynamics")
-                
-                st.markdown('<div class="calculator-title">Interactive Calculator</div>', unsafe_allow_html=True)
-                rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
-                v1 = st.slider("Velocity at Point 1 (m/s)", 0.0, 20.0, 5.0)
-                z1 = st.slider("Elevation at Point 1 (m)", 0.0, 100.0, 0.0)
-                v2 = st.slider("Velocity at Point 2 (m/s)", 0.0, 20.0, 10.0)
-                P1 = 0.5 * rho * v1**2 + rho * 9.81 * z1
-                P2 = 0.5 * rho * v2**2 + rho * 9.81 * z1  # Assuming same elevation for simplicity
-                st.markdown(f"Pressure at Point 1: **{P1:.2f} Pa**")
-                st.markdown(f"Pressure at Point 2: **{P2:.2f} Pa**")
-                st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(r"""
+            $$
+            P_1 + \frac{1}{2}\rho v_1^2 + \rho g z_1 = P_2 + \frac{1}{2}\rho v_2^2 + \rho g z_2
+            $$
+            **Application:** Fluid flow energy conservation
+            """)
+            
+            st.markdown("**Variables:**")
+            st.markdown("- \(P\) = Pressure (Pa)")
+            st.markdown("- \(\rho\) = Fluid density (kg/m³)")
+            st.markdown("- \(v\) = Flow velocity (m/s)")
+            st.markdown("- \(z\) = Elevation (m)")
+            st.markdown("- \(g\) = Gravitational acceleration (9.81 m/s²)")
+
+            st.markdown("**Key Concept:** The sum of pressure energy, kinetic energy, and potential energy remains constant in an ideal fluid flow.")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Airfoil lift generation")
+            st.markdown("- Venturi tube flow measurement")
+            st.markdown("- Blood flow dynamics")
+
+            # Interactive Visualization
+            st.subheader("Interactive Bernoulli Equation")
+            rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
+            v1 = st.slider("Velocity at Point 1 (m/s)", 0.0, 20.0, 5.0)
+            z1 = st.slider("Elevation at Point 1 (m)", 0.0, 100.0, 0.0)
+            v2 = st.slider("Velocity at Point 2 (m/s)", 0.0, 20.0, 10.0)
+            P1 = 0.5 * rho * v1**2 + rho * 9.81 * z1
+            P2 = 0.5 * rho * v2**2 + rho * 9.81 * z1  # Assuming same elevation for simplicity
+            st.markdown(f"Pressure at Point 1: {P1:.2f} Pa")
+            st.markdown(f"Pressure at Point 2: {P2:.2f} Pa")
 
         elif formula == "Hydrostatic Pressure":
-            with st.container():
-                st.markdown('<div class="formula-container">', unsafe_allow_html=True)
-                st.markdown('<h3 class="formula-title">Hydrostatic Pressure</h3>', unsafe_allow_html=True)
-                st.markdown(r"""
-                <div class="formula-equation">
-                    $$
-                    P = \rho g h
-                    $$
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.markdown("**Application:** Pressure at depth in static fluids")
-                
-                st.markdown("**Variables:**")
-                st.markdown("- \(P\) = Pressure (Pa)")
-                st.markdown("- \(\rho\) = Fluid density (kg/m³)")
-                st.markdown("- \(h\) = Depth (m)")
-                st.markdown("- \(g\) = Gravitational acceleration (9.81 m/s²)")
-                
-                st.markdown("**Key Concept:** Pressure increases linearly with depth in a static fluid.")
-                
-                st.markdown("**Real-world Applications:**")
-                st.markdown("- Dam design")
-                st.markdown("- Submarine pressure hulls")
-                st.markdown("- Scuba diving safety")
-                
-                st.markdown('<div class="calculator-title">Interactive Calculator</div>', unsafe_allow_html=True)
-                rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
-                h = st.slider("Depth (m)", 0.0, 100.0, 10.0)
-                P = rho * 9.81 * h
-                st.markdown(f"Pressure at {h:.1f} m depth: **{P:.2f} Pa** (**{P/1000:.2f} kPa**)")
-                st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(r"""
+            $$
+            P = \rho g h
+            $$
+            **Application:** Pressure at depth in static fluids
+            """)
+            
+            st.markdown("**Variables:**")
+            st.markdown("- \(P\) = Pressure (Pa)")
+            st.markdown("- \(\rho\) = Fluid density (kg/m³)")
+            st.markdown("- \(h\) = Depth (m)")
+            st.markdown("- \(g\) = Gravitational acceleration (9.81 m/s²)")
+
+            st.markdown("**Key Concept:** Pressure increases linearly with depth in a static fluid.")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Dam design")
+            st.markdown("- Submarine pressure hulls")
+            st.markdown("- Scuba diving safety")
+
+            # Interactive Visualization
+            st.subheader("Hydrostatic Pressure Calculator")
+            rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
+            h = st.slider("Depth (m)", 0.0, 100.0, 10.0)
+            P = rho * 9.81 * h
+            st.markdown(f"Pressure at {h:.1f} m depth: {P:.2f} Pa ({P/1000:.2f} kPa)")
 
         elif formula == "Continuity Equation":
-            with st.container():
-                st.markdown('<div class="formula-container">', unsafe_allow_html=True)
-                st.markdown('<h3 class="formula-title">Continuity Equation</h3>', unsafe_allow_html=True)
-                st.markdown(r"""
-                <div class="formula-equation">
-                    $$
-                    \rho_1 A_1 v_1 = \rho_2 A_2 v_2
-                    $$
-                    **(For incompressible fluids:**
-                    $$
-                    A_1 v_1 = A_2 v_2
-                    $$
-                    **)**
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.markdown("**Application:** Mass conservation in fluid flow")
-                
-                st.markdown("**Variables:**")
-                st.markdown("- \(A\) = Cross-sectional area (m²)")
-                st.markdown("- \(v\) = Flow velocity (m/s)")
-                st.markdown("- \(\rho\) = Fluid density (kg/m³)")
-                
-                st.markdown("**Key Concept:** Mass flow rate remains constant in a steady flow system.")
-                
-                st.markdown("**Real-world Applications:**")
-                st.markdown("- Pipe flow systems")
-                st.markdown("- Nozzle design")
-                st.markdown("- Aircraft wing design")
-                
-                st.markdown('<div class="calculator-title">Interactive Calculator</div>', unsafe_allow_html=True)
-                A1 = st.slider("Area at Point 1 (m²)", 0.01, 0.1, 0.05)
-                v1 = st.slider("Velocity at Point 1 (m/s)", 1.0, 20.0, 5.0)
-                A2 = st.slider("Area at Point 2 (m²)", 0.01, 0.1, 0.025)
-                v2 = (A1 * v1) / A2
-                st.markdown(f"Velocity at Point 2: **{v2:.2f} m/s**")
-                st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(r"""
+            $$
+            \rho_1 A_1 v_1 = \rho_2 A_2 v_2
+            $$
+            **Application:** Mass conservation in fluid flow
+            **(For incompressible fluids:**
+            $$
+            A_1 v_1 = A_2 v_2
+            $$
+            **)**
+            """)
+            
+            st.markdown("**Variables:**")
+            st.markdown("- \(A\) = Cross-sectional area (m²)")
+            st.markdown("- \(v\) = Flow velocity (m/s)")
+            st.markdown("- \(\rho\) = Fluid density (kg/m³)")
+
+            st.markdown("**Key Concept:** Mass flow rate remains constant in a steady flow system.")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Pipe flow systems")
+            st.markdown("- Nozzle design")
+            st.markdown("- Aircraft wing design")
+
+            # Interactive Visualization
+            st.subheader("Continuity Equation Calculator")
+            A1 = st.slider("Area at Point 1 (m²)", 0.01, 0.1, 0.05)
+            v1 = st.slider("Velocity at Point 1 (m/s)", 1.0, 20.0, 5.0)
+            A2 = st.slider("Area at Point 2 (m²)", 0.01, 0.1, 0.025)
+            v2 = (A1 * v1) / A2
+            st.markdown(f"Velocity at Point 2: {v2:.2f} m/s")
 
         elif formula == "Reynolds Number":
-            with st.container():
-                st.markdown('<div class="formula-container">', unsafe_allow_html=True)
-                st.markdown('<h3 class="formula-title">Reynolds Number</h3>', unsafe_allow_html=True)
-                st.markdown(r"""
-                <div class="formula-equation">
-                    $$
-                    Re = \frac{\rho v L}{\mu}
-                    $$
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.markdown("**Application:** Dimensionless quantity for flow regime determination")
-                st.markdown("**(Where:**")
-                st.markdown("- \(\rho\) = Fluid density")
-                st.markdown("- \(v\) = Flow velocity")
-                st.markdown("- \(L\) = Characteristic length")
-                st.markdown("- \(\mu\) = Dynamic viscosity")
-                st.markdown("**)**")
-                
-                st.markdown("**Key Concept:** Ratio of inertial forces to viscous forces in a fluid flow.")
-                st.markdown("**Flow Regimes:**")
-                st.markdown("- Laminar flow: Re < 2000")
-                st.markdown("- Transitional flow: 2000 ≤ Re ≤ 4000")
-                st.markdown("- Turbulent flow: Re > 4000")
-                
-                st.markdown("**Real-world Applications:**")
-                st.markdown("- Pipe flow analysis")
-                st.markdown("- Aircraft wing design")
-                st.markdown("- Heat exchanger design")
-                
-                st.markdown('<div class="calculator-title">Interactive Calculator</div>', unsafe_allow_html=True)
-                rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
-                v = st.slider("Flow Velocity (m/s)", 0.1, 20.0, 1.0)
-                L = st.slider("Characteristic Length (m)", 0.01, 0.1, 0.05)
-                mu = st.slider("Dynamic Viscosity (Pa·s)", 0.0001, 0.001, 0.001)
-                Re = (rho * v * L) / mu
-                flow_regime = "Laminar" if Re < 2000 else "Transitional" if Re < 4000 else "Turbulent"
-                st.markdown(f"Reynolds Number: **{Re:.2f}** (**{flow_regime} flow**)")
-                st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(r"""
+            $$
+            Re = \frac{\rho v L}{\mu}
+            $$
+            **Application:** Dimensionless quantity for flow regime determination
+            **(Where:**
+            - \(\rho\) = Fluid density
+            - \(v\) = Flow velocity
+            - \(L\) = Characteristic length
+            - \(\mu\) = Dynamic viscosity
+            **)**
+            """)
+            
+            st.markdown("**Key Concept:** Ratio of inertial forces to viscous forces in a fluid flow.")
+            st.markdown("**Flow Regimes:**")
+            st.markdown("- Laminar flow: Re < 2000")
+            st.markdown("- Transitional flow: 2000 ≤ Re ≤ 4000")
+            st.markdown("- Turbulent flow: Re > 4000")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Pipe flow analysis")
+            st.markdown("- Aircraft wing design")
+            st.markdown("- Heat exchanger design")
+
+            # Interactive Visualization
+            st.subheader("Reynolds Number Calculator")
+            rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
+            v = st.slider("Flow Velocity (m/s)", 0.1, 20.0, 1.0)
+            L = st.slider("Characteristic Length (m)", 0.01, 0.1, 0.05)
+            mu = st.slider("Dynamic Viscosity (Pa·s)", 0.0001, 0.001, 0.001)
+            Re = (rho * v * L) / mu
+            flow_regime = "Laminar" if Re < 2000 else "Transitional" if Re < 4000 else "Turbulent"
+            st.markdown(f"Reynolds Number: {Re:.2f} ({flow_regime} flow)")
 
         elif formula == "Darcy-Weisbach Equation":
-            with st.container():
-                st.markdown('<div class="formula-container">', unsafe_allow_html=True)
-                st.markdown('<h3 class="formula-title">Darcy-Weisbach Equation</h3>', unsafe_allow_html=True)
-                st.markdown(r"""
-                <div class="formula-equation">
-                    $$
-                    h_f = f \frac{L}{D} \frac{v^2}{2g}
-                    $$
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.markdown("**Application:** Pressure loss due to friction in pipes")
-                st.markdown("**(Where:**")
-                st.markdown("- \(h_f\) = Head loss")
-                st.markdown("- \(f\) = Friction factor")
-                st.markdown("- \(L\) = Pipe length")
-                st.markdown("- \(D\) = Pipe diameter")
-                st.markdown("- \(v\) = Flow velocity")
-                st.markdown("- \(g\) = Gravitational acceleration")
-                st.markdown("**)**")
-                
-                st.markdown("**Key Concept:** Calculates the head loss in a pipe due to friction.")
-                st.markdown("**Friction Factor Determination:**")
-                st.markdown("- Laminar flow: \(f = 64/Re\)")
-                st.markdown("- Turbulent flow: Determined from Moody diagram")
-                
-                st.markdown("**Real-world Applications:**")
-                st.markdown("- Pipeline design")
-                st.markdown("- Pump selection")
-                st.markdown("- Irrigation system design")
-                
-                st.markdown('<div class="calculator-title">Interactive Calculator</div>', unsafe_allow_html=True)
-                f = st.slider("Friction Factor", 0.001, 0.1, 0.02)
-                L = st.slider("Pipe Length (m)", 1.0, 1000.0, 100.0)
-                D = st.slider("Pipe Diameter (m)", 0.01, 0.5, 0.1)
-                v = st.slider("Flow Velocity (m/s)", 0.1, 10.0, 1.0)
-                hf = f * (L / D) * (v**2 / (2 * 9.81))
-                st.markdown(f"Head Loss: **{hf:.2f} m**")
-                st.markdown('</div>', unsafe_allow_html=True)
-        
+            st.markdown(r"""
+            $$
+            h_f = f \frac{L}{D} \frac{v^2}{2g}
+            $$
+            **Application:** Pressure loss due to friction in pipes
+            **(Where:**
+            - \(h_f\) = Head loss
+            - \(f\) = Friction factor
+            - \(L\) = Pipe length
+            - \(D\) = Pipe diameter
+            - \(v\) = Flow velocity
+            - \(g\) = Gravitational acceleration
+            **)**
+            """)
+            
+            st.markdown("**Key Concept:** Calculates the head loss in a pipe due to friction.")
+            st.markdown("**Friction Factor Determination:**")
+            st.markdown("- Laminar flow: \(f = 64/Re\)")
+            st.markdown("- Turbulent flow: Determined from Moody diagram")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Pipeline design")
+            st.markdown("- Pump selection")
+            st.markdown("- Irrigation system design")
+
+            # Interactive Visualization
+            st.subheader("Darcy-Weisbach Calculator")
+            f = st.slider("Friction Factor", 0.001, 0.1, 0.02)
+            L = st.slider("Pipe Length (m)", 1.0, 1000.0, 100.0)
+            D = st.slider("Pipe Diameter (m)", 0.01, 0.5, 0.1)
+            v = st.slider("Flow Velocity (m/s)", 0.1, 10.0, 1.0)
+            hf = f * (L / D) * (v**2 / (2 * 9.81))
+            st.markdown(f"Head Loss: {hf:.2f} m")
+    
     with tab3:
         st.subheader("🔬 Research Tools")
         tools = pd.DataFrame({
