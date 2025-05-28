@@ -388,18 +388,34 @@ def show_properties():
     
     st.subheader("🌐 3D Fluid Property Explorer")
     col1, col2 = st.columns(2)
+
+    # Fluid selection
+    fluid = st.sidebar.selectbox("Select Fluid", ["Water", "Air", "Oil"])
+
     with col1:
         temperature = st.slider("Temperature (°C)", 0, 100, 25)
         pressure = st.slider("Pressure (atm)", 1, 10, 1)
+
     with col2:
-        x = np.linspace(0, 100, 50)
-        y = np.linspace(1, 10, 50)
-        X, Y = np.meshgrid(x, y)
-        Z = np.sin(X/10) + np.cos(Y) + 2
-        
-        fig = go.Figure(data=[go.Surface(z=Z, x=X, y=Y, colorscale='Viridis')])
+        # Create grid of temperature and pressure values
+        temp_grid = np.linspace(0, 100, 50)
+        press_grid = np.linspace(1, 10, 50)
+        T, P = np.meshgrid(temp_grid, press_grid)
+
+        # Calculate density based on fluid selection
+        if fluid == "Water":
+            # Using simplified water density approximation
+            density = 1000 * (1 - (T * 0.0002) + (P * 0.001))
+        elif fluid == "Air":
+            # Using ideal gas law approximation for air
+            density = (P * 101325 / 10) / (287 * (273.15 + T))
+        else:  # Oil
+            # Simplified oil density model
+            density = 850 * (1 - (T * 0.0001) + (P * 0.0005))
+
+        fig = go.Figure(data=[go.Surface(z=density, x=temp_grid, y=press_grid, colorscale='Viridis')])
         fig.update_layout(
-            title="Fluid Property Relationships",
+            title=f"{fluid} Density Variation",
             scene=dict(
                 xaxis_title="Temperature (°C)",
                 yaxis_title="Pressure (atm)",
