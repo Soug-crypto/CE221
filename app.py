@@ -496,7 +496,7 @@ def main():
     
     if st.session_state.last_section != selection:
         st.session_state.last_section = selection
-        st.experimental_rerun()
+        # st.experimental_rerun()
     
     sections[selection]()
     
