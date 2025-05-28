@@ -706,7 +706,7 @@ def show_resources():
                 st.success(f"✅ {value} {from_unit} = {result:.4f} {to_unit}")
             except KeyError:
                 st.error("🚨 Conversion not supported for selected units")
-    
+        
     with tab2:
         st.subheader("🧮 Formula Reference")
         formula = st.selectbox("Select Formula", [
@@ -716,7 +716,7 @@ def show_resources():
             "Reynolds Number",
             "Darcy-Weisbach Equation"
         ])
-        
+
         if formula == "Bernoulli's Equation":
             st.markdown(r"""
             $$
@@ -724,6 +724,32 @@ def show_resources():
             $$
             **Application:** Fluid flow energy conservation
             """)
+            
+            st.markdown("**Variables:**")
+            st.markdown("- \(P\) = Pressure (Pa)")
+            st.markdown("- \(\rho\) = Fluid density (kg/m³)")
+            st.markdown("- \(v\) = Flow velocity (m/s)")
+            st.markdown("- \(z\) = Elevation (m)")
+            st.markdown("- \(g\) = Gravitational acceleration (9.81 m/s²)")
+
+            st.markdown("**Key Concept:** The sum of pressure energy, kinetic energy, and potential energy remains constant in an ideal fluid flow.")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Airfoil lift generation")
+            st.markdown("- Venturi tube flow measurement")
+            st.markdown("- Blood flow dynamics")
+
+            # Interactive Visualization
+            st.subheader("Interactive Bernoulli Equation")
+            rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
+            v1 = st.slider("Velocity at Point 1 (m/s)", 0.0, 20.0, 5.0)
+            z1 = st.slider("Elevation at Point 1 (m)", 0.0, 100.0, 0.0)
+            v2 = st.slider("Velocity at Point 2 (m/s)", 0.0, 20.0, 10.0)
+            P1 = 0.5 * rho * v1**2 + rho * 9.81 * z1
+            P2 = 0.5 * rho * v2**2 + rho * 9.81 * z1  # Assuming same elevation for simplicity
+            st.markdown(f"Pressure at Point 1: {P1:.2f} Pa")
+            st.markdown(f"Pressure at Point 2: {P2:.2f} Pa")
+
         elif formula == "Hydrostatic Pressure":
             st.markdown(r"""
             $$
@@ -731,6 +757,27 @@ def show_resources():
             $$
             **Application:** Pressure at depth in static fluids
             """)
+            
+            st.markdown("**Variables:**")
+            st.markdown("- \(P\) = Pressure (Pa)")
+            st.markdown("- \(\rho\) = Fluid density (kg/m³)")
+            st.markdown("- \(h\) = Depth (m)")
+            st.markdown("- \(g\) = Gravitational acceleration (9.81 m/s²)")
+
+            st.markdown("**Key Concept:** Pressure increases linearly with depth in a static fluid.")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Dam design")
+            st.markdown("- Submarine pressure hulls")
+            st.markdown("- Scuba diving safety")
+
+            # Interactive Visualization
+            st.subheader("Hydrostatic Pressure Calculator")
+            rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
+            h = st.slider("Depth (m)", 0.0, 100.0, 10.0)
+            P = rho * 9.81 * h
+            st.markdown(f"Pressure at {h:.1f} m depth: {P:.2f} Pa ({P/1000:.2f} kPa)")
+
         elif formula == "Continuity Equation":
             st.markdown(r"""
             $$
@@ -743,6 +790,27 @@ def show_resources():
             $$
             **)**
             """)
+            
+            st.markdown("**Variables:**")
+            st.markdown("- \(A\) = Cross-sectional area (m²)")
+            st.markdown("- \(v\) = Flow velocity (m/s)")
+            st.markdown("- \(\rho\) = Fluid density (kg/m³)")
+
+            st.markdown("**Key Concept:** Mass flow rate remains constant in a steady flow system.")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Pipe flow systems")
+            st.markdown("- Nozzle design")
+            st.markdown("- Aircraft wing design")
+
+            # Interactive Visualization
+            st.subheader("Continuity Equation Calculator")
+            A1 = st.slider("Area at Point 1 (m²)", 0.01, 0.1, 0.05)
+            v1 = st.slider("Velocity at Point 1 (m/s)", 1.0, 20.0, 5.0)
+            A2 = st.slider("Area at Point 2 (m²)", 0.01, 0.1, 0.025)
+            v2 = (A1 * v1) / A2
+            st.markdown(f"Velocity at Point 2: {v2:.2f} m/s")
+
         elif formula == "Reynolds Number":
             st.markdown(r"""
             $$
@@ -756,6 +824,28 @@ def show_resources():
             - \(\mu\) = Dynamic viscosity
             **)**
             """)
+            
+            st.markdown("**Key Concept:** Ratio of inertial forces to viscous forces in a fluid flow.")
+            st.markdown("**Flow Regimes:**")
+            st.markdown("- Laminar flow: Re < 2000")
+            st.markdown("- Transitional flow: 2000 ≤ Re ≤ 4000")
+            st.markdown("- Turbulent flow: Re > 4000")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Pipe flow analysis")
+            st.markdown("- Aircraft wing design")
+            st.markdown("- Heat exchanger design")
+
+            # Interactive Visualization
+            st.subheader("Reynolds Number Calculator")
+            rho = st.slider("Fluid Density (kg/m³)", 900, 1100, 1000)
+            v = st.slider("Flow Velocity (m/s)", 0.1, 20.0, 1.0)
+            L = st.slider("Characteristic Length (m)", 0.01, 0.1, 0.05)
+            mu = st.slider("Dynamic Viscosity (Pa·s)", 0.0001, 0.001, 0.001)
+            Re = (rho * v * L) / mu
+            flow_regime = "Laminar" if Re < 2000 else "Transitional" if Re < 4000 else "Turbulent"
+            st.markdown(f"Reynolds Number: {Re:.2f} ({flow_regime} flow)")
+
         elif formula == "Darcy-Weisbach Equation":
             st.markdown(r"""
             $$
@@ -771,6 +861,25 @@ def show_resources():
             - \(g\) = Gravitational acceleration
             **)**
             """)
+            
+            st.markdown("**Key Concept:** Calculates the head loss in a pipe due to friction.")
+            st.markdown("**Friction Factor Determination:**")
+            st.markdown("- Laminar flow: \(f = 64/Re\)")
+            st.markdown("- Turbulent flow: Determined from Moody diagram")
+
+            st.markdown("**Real-world Applications:**")
+            st.markdown("- Pipeline design")
+            st.markdown("- Pump selection")
+            st.markdown("- Irrigation system design")
+
+            # Interactive Visualization
+            st.subheader("Darcy-Weisbach Calculator")
+            f = st.slider("Friction Factor", 0.001, 0.1, 0.02)
+            L = st.slider("Pipe Length (m)", 1.0, 1000.0, 100.0)
+            D = st.slider("Pipe Diameter (m)", 0.01, 0.5, 0.1)
+            v = st.slider("Flow Velocity (m/s)", 0.1, 10.0, 1.0)
+            hf = f * (L / D) * (v**2 / (2 * 9.81))
+            st.markdown(f"Head Loss: {hf:.2f} m")
     
     with tab3:
         st.subheader("🔬 Research Tools")
