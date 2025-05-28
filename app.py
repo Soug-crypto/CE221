@@ -439,7 +439,7 @@ def show_statics():
         fig = go.Figure(data=go.Contour(
             z=P, x=x, y=y, colorscale='Viridis',
             contours=dict(coloring='lines', showlabels=True)
-        )
+        ))
         fig.update_layout(
             title=f"Pressure Distribution at {depth_viz}m Depth",
             height=500
