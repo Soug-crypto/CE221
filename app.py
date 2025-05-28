@@ -395,7 +395,7 @@ def show_properties():
     with col1:
         temperature = st.slider("Temperature (°C)", 0, 100, 25)
         pressure = st.slider("Pressure (atm)", 1, 10, 1)
-        fluid = st.sidebar.selectbox("Select Fluid", ["Water", "Air", "Oil"])
+        fluid = st.sidebar.selectbox("Select Fluid", ["Water", "Air", "Oil"], key="fluid_selector")
 
     with col2:
         # Create grid of temperature and pressure values
