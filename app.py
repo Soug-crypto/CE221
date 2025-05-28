@@ -539,46 +539,167 @@ def show_dynamics():
             fluid = st.selectbox("Fluid", ["Water", "Oil", "Mercury"])
         
         plot_bernoulli(diameter, velocity, elevation)
-    
     with tab3:
         st.subheader("📏 Flow Measurement Devices")
+        
+        # Custom CSS for better UI
+        st.markdown("""
+        <style>
+            .device-info {
+                background-color: #f0f2f6;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+            .param-container {
+                margin-bottom: 15px;
+            }
+            .equation {
+                background-color: white;
+                padding: 10px;
+                border-radius: 5px;
+                margin: 10px 0;
+            }
+        </style>
+        """, unsafe_allow_html=True)
+        
         device_type = st.radio("Select Device", ["Orifice", "Venturi", "Rotameter"])
         
-        col1, col2 = st.columns(2)
+        col1, col2 = st.columns([1, 2])
+        
         with col1:
+            st.markdown(f'<div class="device-info"><h4>{device_type} Information</h4></div>', unsafe_allow_html=True)
+            
             if device_type == "Orifice":
+                st.markdown("""
+                **Orifice Plate** is a thin plate with a hole in the center, placed in a pipe to measure fluid flow rate.
+                The pressure difference across the orifice is related to the flow rate.
+                """)
+                st.markdown('<div class="equation">$$Q = C_d A_0 \sqrt{\frac{2 \Delta P}{\rho (1 - \beta^4)}}$$</div>', unsafe_allow_html=True)
+                st.markdown("- \(Q\) = Volumetric flow rate")
+                st.markdown("- \(C_d\) = Discharge coefficient")
+                st.markdown("- \(A_0\) = Orifice area")
+                st.markdown("- \(\Delta P\) = Pressure difference")
+                st.markdown("- \(\rho\) = Fluid density")
+                st.markdown("- \(\beta\) = Ratio of orifice diameter to pipe diameter")
+                
                 beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+                Cd = st.slider("Discharge Coefficient", 0.5, 1.0, 0.62)
+                
             elif device_type == "Venturi":
+                st.markdown("""
+                **Venturi Meter** uses a converging section followed by a diverging section to measure fluid flow rate.
+                The pressure difference between the inlet and throat is related to the flow rate.
+                """)
+                st.markdown('<div class="equation">$$Q = C_d A_2 \sqrt{\frac{2 \Delta P}{\rho (1 - \beta^4)}}$$</div>', unsafe_allow_html=True)
+                st.markdown("- \(Q\) = Volumetric flow rate")
+                st.markdown("- \(C_d\) = Discharge coefficient")
+                st.markdown("- \(A_2\) = Throat area")
+                st.markdown("- \(\Delta P\) = Pressure difference")
+                st.markdown("- \(\rho\) = Fluid density")
+                st.markdown("- \(\beta\) = Ratio of throat diameter to inlet diameter")
+                
                 beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
-            else:
-                beta = st.slider("Float Position", 0.1, 1.0, 0.5)
+                Cd = st.slider("Discharge Coefficient", 0.9, 0.98, 0.95)
+                
+            else:  # Rotameter
+                st.markdown("""
+                **Rotameter** is a variable area flow meter where a float rises in a tapered tube as flow increases.
+                The position of the float indicates the flow rate.
+                """)
+                st.markdown('<div class="equation">$$Q = K (h)^{1/2}$$</div>', unsafe_allow_html=True)
+                st.markdown("- \(Q\) = Volumetric flow rate")
+                st.markdown("- \(K\) = Calibration constant")
+                st.markdown("- \(h\) = Float position (height)")
+                
+                float_pos = st.slider("Float Position", 0.1, 1.0, 0.5)
+                K = st.slider("Calibration Constant", 0.1, 1.0, 0.5)
         
         with col2:
             fig = go.Figure()
+            
             if device_type == "Orifice":
                 fig.add_shape(type="circle", x0=-beta, y0=-beta, x1=beta, y1=beta, 
-                             line=dict(color="red"), xref="x", yref="y")
+                            line=dict(color="red", width=2))
                 fig.add_shape(type="rect", x0=-1, y0=-1, x1=1, y1=1, 
-                             line=dict(color="blue"), xref="x", yref="y")
+                            line=dict(color="blue", width=2))
+                fig.add_annotation(x=0, y=1.3, text="Pipe", showarrow=False, font=dict(size=14))
+                fig.add_annotation(x=0, y=beta+0.1, text="Orifice", showarrow=False, font=dict(size=14))
+                
             elif device_type == "Venturi":
                 x = np.linspace(-1, 1, 100)
                 y_upper = np.where(x < 0, 1, beta)
                 y_lower = np.where(x < 0, -1, -beta)
                 fig.add_trace(go.Scatter(x=x, y=y_upper, fill=None, 
-                                       mode='lines', line_color='red'))
+                                    mode='lines', line=dict(color='red', width=2)))
                 fig.add_trace(go.Scatter(x=x, y=y_lower, fill='tonexty', 
-                                       mode='lines', line_color='red'))
-            else:
+                                    mode='lines', line=dict(color='red', width=2)))
+                fig.add_annotation(x=-0.5, y=1.3, text="Inlet", showarrow=False, font=dict(size=14))
+                fig.add_annotation(x=0.5, y=beta+0.1, text="Throat", showarrow=False, font=dict(size=14))
+                
+            else:  # Rotameter
                 fig.add_shape(type="path", 
-                             path="M 0,0 Q 0.5,1 1,0.5 L 1,-0.5 Q 0.5,-1 0,0 Z",
-                             fillcolor="rgba(255,0,0,0.5)", line=dict(color="red"))
-            
+                            path="M 0,0 Q 0.5,1 1,0.5 L 1,-0.5 Q 0.5,-1 0,0 Z",
+                            fillcolor="rgba(255,0,0,0.3)", line=dict(color="red", width=2))
+                fig.add_shape(type="line", x0=0, y0=0, x1=1, y1=0, line=dict(color="black", width=2))
+                fig.add_annotation(x=0.5, y=0, text="Float Position", showarrow=True, arrowhead=1, 
+                                font=dict(size=14), ay=-30)
+                
             fig.update_layout(
-                width=500, height=400,
-                xaxis_range=[-1.2, 1.2], yaxis_range=[-1.2, 1.2],
-                xaxis_visible=False, yaxis_visible=False
+                width=600, height=500,
+                xaxis_range=[-1.5, 1.5], yaxis_range=[-1.5, 1.5],
+                xaxis_visible=False, yaxis_visible=False,
+                annotations=[
+                    dict(
+                        text=f"{device_type} Meter",
+                        xref="paper", yref="paper",
+                        x=0.5, y=1.05,
+                        showarrow=False,
+                        font=dict(size=16)
+                    )
+                ]
             )
             st.plotly_chart(fig, use_container_width=True)
+
+    # with tab3:
+    #     st.subheader("📏 Flow Measurement Devices")
+    #     device_type = st.radio("Select Device", ["Orifice", "Venturi", "Rotameter"])
+        
+    #     col1, col2 = st.columns(2)
+    #     with col1:
+    #         if device_type == "Orifice":
+    #             beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+    #         elif device_type == "Venturi":
+    #             beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+    #         else:
+    #             beta = st.slider("Float Position", 0.1, 1.0, 0.5)
+        
+    #     with col2:
+    #         fig = go.Figure()
+    #         if device_type == "Orifice":
+    #             fig.add_shape(type="circle", x0=-beta, y0=-beta, x1=beta, y1=beta, 
+    #                          line=dict(color="red"), xref="x", yref="y")
+    #             fig.add_shape(type="rect", x0=-1, y0=-1, x1=1, y1=1, 
+    #                          line=dict(color="blue"), xref="x", yref="y")
+    #         elif device_type == "Venturi":
+    #             x = np.linspace(-1, 1, 100)
+    #             y_upper = np.where(x < 0, 1, beta)
+    #             y_lower = np.where(x < 0, -1, -beta)
+    #             fig.add_trace(go.Scatter(x=x, y=y_upper, fill=None, 
+    #                                    mode='lines', line_color='red'))
+    #             fig.add_trace(go.Scatter(x=x, y=y_lower, fill='tonexty', 
+    #                                    mode='lines', line_color='red'))
+    #         else:
+    #             fig.add_shape(type="path", 
+    #                          path="M 0,0 Q 0.5,1 1,0.5 L 1,-0.5 Q 0.5,-1 0,0 Z",
+    #                          fillcolor="rgba(255,0,0,0.5)", line=dict(color="red"))
+            
+    #         fig.update_layout(
+    #             width=500, height=400,
+    #             xaxis_range=[-1.2, 1.2], yaxis_range=[-1.2, 1.2],
+    #             xaxis_visible=False, yaxis_visible=False
+    #         )
+    #         st.plotly_chart(fig, use_container_width=True)
 
 def show_applications():
     st.header("🏗️ Engineering Applications")
