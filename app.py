@@ -627,8 +627,8 @@ def show_dynamics():
                 fig.add_annotation(x=0, y=beta+0.1, text="Orifice", showarrow=False, font=dict(size=14))
                 
                 fig.update_traces(hoverinfo='name')
-                orifice.hovertemplate = 'Orifice<br>Area: %{x:.2f} m²'
-                pipe.hovertemplate = 'Pipe<br>Diameter: 1.0 m'
+                # orifice.hovertemplate = 'Orifice<br>Area: %{x:.2f} m²'
+                # pipe.hovertemplate = 'Pipe<br>Diameter: 1.0 m'
                 
             elif device_type == "Venturi":
                 x = np.linspace(-1, 1, 100)
@@ -644,8 +644,8 @@ def show_dynamics():
                 fig.add_annotation(x=0.5, y=beta+0.1, text="Throat", showarrow=False, font=dict(size=14))
                 
                 fig.update_traces(hoverinfo='name+text')
-                inlet.hovertemplate = 'Inlet<br>Diameter: 1.0 m'
-                throat.hovertemplate = f'Throat<br>Diameter: {beta:.2f} m'
+                # inlet.hovertemplate = 'Inlet<br>Diameter: 1.0 m'
+                # throat.hovertemplate = f'Throat<br>Diameter: {beta:.2f} m'
                 
             else:  # Rotameter
                 tube = fig.add_shape(type="path", 
@@ -656,8 +656,8 @@ def show_dynamics():
                                 font=dict(size=14), ay=-30)
                 
                 fig.update_traces(hoverinfo='name')
-                tube.hovertemplate = 'Tube<br>Diameter: 1.0 m'
-                float_valve.hovertemplate = f'Float Position: {float_pos:.2f} m'
+                # tube.hovertemplate = 'Tube<br>Diameter: 1.0 m'
+                # float_valve.hovertemplate = f'Float Position: {float_pos:.2f} m'
                 
             fig.update_layout(
                 width=600, height=500,
