@@ -559,9 +559,9 @@ def show_dynamics():
         st.subheader("Interactive Moody Diagram")
         col1, col2 = st.columns(2)
         with col1:
-            Re = st.slider("Reynolds Number (Re)", 1e3, 1e7, 5e5, step=1000.0)
+            Re = st.slider("Reynolds Number (Re)", 1e3, 1e7, 5e5, step=1000.0, key='moddy_re')
             roughness = st.select_slider("Relative Roughness (ε/D)", 
-                                       options=[0.0001, 0.001, 0.01, 0.05])
+                                       options=[0.0001, 0.001, 0.01, 0.05], key='moddy_roughness')
         plot_moody(Re, roughness)
         st.markdown("""
         **Understanding the Diagram:**
@@ -572,23 +572,23 @@ def show_dynamics():
     
     with tab2:
         st.subheader("Bernoulli Equation Simulator")
-        diameter = st.slider("Pipe Diameter (m)", 0.1, 2.0, 0.5)
-        velocity = st.slider("Initial Velocity (m/s)", 0.1, 10.0, 2.0)
-        elevation = st.slider("Elevation Change (m)", -10.0, 10.0, 0.0)
-        plot_bernoulli(diameter, velocity, elevation)
+        diameter_bernoulli = st.slider("Pipe Diameter (m)", 0.1, 2.0, 0.5, key='bernoulli_diameter')
+        velocity = st.slider("Initial Velocity (m/s)", 0.1, 10.0, 2.0, key='bernoulli_velocity')
+        elevation = st.slider("Elevation Change (m)", -10.0, 10.0, 0.0, key='bernoulli_elevation')
+        plot_bernoulli(diameter_bernoulli, velocity, elevation)
     
     with tab3:
         st.subheader("Flow Measurement Devices")
-        device_type = st.radio("Select Device", ["Orifice", "Venturi", "Rotameter"])
+        device_type = st.radio("Select Device", ["Orifice", "Venturi", "Rotameter"], key='device_type')
         
         if device_type == "Orifice":
-            beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+            beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5, key='orifice_beta')
             Reynolds = 1000 * 2 * 1 / 0.001  
         elif device_type == "Venturi":
-            beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+            beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5, key='venturi_beta')
             Reynolds = 1000 * 3 * 1 / 0.001  
         else:
-            beta = st.slider("Float Position", 0.1, 1.0, 0.5)
+            beta = st.slider("Float Position", 0.1, 1.0, 0.5, key='rotameter_float')
             Reynolds = 1000 * 0.5 * 1 / 0.001  
     
         fig = go.Figure()
@@ -624,12 +624,12 @@ def show_dynamics():
     
     # Flow Regime Indicator
     st.subheader("Flow Regime Indicator")
-    Re = st.slider("Reynolds Number", 100, 10000000, 500000)
+    Re_regime = st.slider("Reynolds Number", 100, 10000000, 500000, key='regime_re')
     
-    if Re < 2000:
+    if Re_regime < 2000:
         regime = "Laminar"
         color = "lightgreen"
-    elif Re < 4000:
+    elif Re_regime < 4000:
         regime = "Transitional"
         color = "gold"
     else:
@@ -638,13 +638,13 @@ def show_dynamics():
         
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
-        value=Re,
+        value=Re_regime,
         domain={'x': [0, 1], 'y': [0, 1]},
         title={'text': f"Flow Regime: {regime}"},
         gauge={
             'shape': "bullet",
             'axis': {'range': [None, 10000000], 'visible': True},
-            'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': Re},
+            'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': Re_regime},
             'bgcolor': "white",
             'steps': [
                 {'range': [0, 2000], 'color': "lightgreen"},
@@ -656,13 +656,13 @@ def show_dynamics():
     
     # Velocity Profile Visualizer
     st.subheader("Velocity Profile Visualizer")
-    diameter_velocity = st.slider("Pipe Diameter (m) for Velocity Profile", 0.01, 1.0, 0.1, key='diameter_velocity')
-    velocity_center = st.slider("Center Velocity (m/s)", 0.1, 10.0, 2.0, key='velocity_center')
-    viscosity = st.slider("Fluid Viscosity (Pa·s)", 0.0001, 0.1, 0.001, key='viscosity')
-        
+    diameter_velocity = st.slider("Pipe Diameter for Velocity Profile (m)", 0.01, 1.0, 0.1, key='velocity_diameter')
+    velocity_center = st.slider("Center Velocity (m/s)", 0.1, 10.0, 2.0, key='center_velocity')
+    viscosity = st.slider("Fluid Viscosity (Pa·s)", 0.0001, 0.1, 0.001, key='fluid_viscosity')
+    
     r = np.linspace(0, diameter_velocity/2, 50)
     velocity = velocity_center * (1 - (r/(diameter_velocity/2))**2)
-        
+    
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=r,
@@ -679,13 +679,13 @@ def show_dynamics():
     
     # Energy Grade Line Plotter
     st.subheader("Energy Grade Line Visualization")
-    head = st.slider("Total Head (m)", 10, 100, 50)
-    friction_factor = st.slider("Friction Factor", 0.001, 0.1, 0.02)
-    pipe_length = st.slider("Pipe Length (m)", 10, 1000, 200)
-    diameter = st.slider("Pipe Diameter (m)", 0.1, 2.0, 0.5)
+    head = st.slider("Total Head (m)", 10, 100, 50, key='total_head')
+    friction_factor = st.slider("Friction Factor", 0.001, 0.1, 0.02, key='friction_factor')
+    pipe_length = st.slider("Pipe Length (m)", 10, 1000, 200, key='pipe_length')
+    diameter_eql = st.slider("Pipe Diameter for EGL (m)", 0.1, 2.0, 0.5, key='eql_diameter')
     
     x = np.linspace(0, pipe_length, 20)
-    EGL = head - friction_factor * (x / diameter)
+    EGL = head - friction_factor * (x / diameter_eql)
     
     fig = go.Figure()
     fig.add_trace(go.Scatter(
@@ -708,6 +708,165 @@ def show_dynamics():
         title="Energy Grade Line and Hydraulic Grade Line"
     )
     st.plotly_chart(fig)
+    
+# def show_dynamics():
+#     st.header("Fluid Dynamics Interactive Tools")
+    
+#     tab1, tab2, tab3 = st.tabs(["Moody Diagram", "Bernoulli", "Continuity"])
+    
+#     with tab1:
+#         st.subheader("Interactive Moody Diagram")
+#         col1, col2 = st.columns(2)
+#         with col1:
+#             Re = st.slider("Reynolds Number (Re)", 1e3, 1e7, 5e5, step=1000.0)
+#             roughness = st.select_slider("Relative Roughness (ε/D)", 
+#                                        options=[0.0001, 0.001, 0.01, 0.05])
+#         plot_moody(Re, roughness)
+#         st.markdown("""
+#         **Understanding the Diagram:**
+#         - Blue line: Laminar flow regime (Re < 2000)
+#         - Red line: Turbulent flow regime (Re > 4000)
+#         - Green dot: Current selected parameters
+#         """)
+    
+#     with tab2:
+#         st.subheader("Bernoulli Equation Simulator")
+#         diameter = st.slider("Pipe Diameter (m)", 0.1, 2.0, 0.5)
+#         velocity = st.slider("Initial Velocity (m/s)", 0.1, 10.0, 2.0)
+#         elevation = st.slider("Elevation Change (m)", -10.0, 10.0, 0.0)
+#         plot_bernoulli(diameter, velocity, elevation)
+    
+#     with tab3:
+#         st.subheader("Flow Measurement Devices")
+#         device_type = st.radio("Select Device", ["Orifice", "Venturi", "Rotameter"])
+        
+#         if device_type == "Orifice":
+#             beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+#             Reynolds = 1000 * 2 * 1 / 0.001  
+#         elif device_type == "Venturi":
+#             beta = st.slider("Beta Ratio (d/D)", 0.2, 0.8, 0.5)
+#             Reynolds = 1000 * 3 * 1 / 0.001  
+#         else:
+#             beta = st.slider("Float Position", 0.1, 1.0, 0.5)
+#             Reynolds = 1000 * 0.5 * 1 / 0.001  
+    
+#         fig = go.Figure()
+#         if device_type == "Orifice":
+#             fig.add_shape(type="circle", x0=-beta, y0=-beta, x1=beta, y1=beta, 
+#                          line=dict(color="red"), xref="x", yref="y")
+#             fig.add_shape(type="rect", x0=-1, y0=-1, x1=1, y1=1, 
+#                          line=dict(color="blue"), xref="x", yref="y")
+#         elif device_type == "Venturi":
+#             x = np.linspace(-1, 1, 100)
+#             y_upper = np.where(x < 0, 1, beta)
+#             y_lower = np.where(x < 0, -1, -beta)
+#             fig.add_trace(go.Scatter(x=x, y=y_upper, fill=None, mode='lines', line_color='red'))
+#             fig.add_trace(go.Scatter(x=x, y=y_lower, fill='tonexty', mode='lines', line_color='red'))
+#         else:
+#             fig.add_shape(type="path", 
+#                          path="M 0,0 Q 0.5,1 1,0.5 L 1,-0.5 Q 0.5,-1 0,0 Z",
+#                          fillcolor="rgba(255,0,0,0.5)", line=dict(color="red"))
+        
+#         fig.update_layout(
+#             width=500,
+#             height=500,
+#             xaxis_range=[-1.2, 1.2],
+#             yaxis_range=[-1.2, 1.2],
+#             xaxis_visible=False,
+#             yaxis_visible=False
+#         )
+#         st.plotly_chart(fig)
+    
+#     # Momentum Equation
+#     st.subheader("Momentum Equation")
+#     st.write("The momentum equation relates the sum of forces acting on a fluid to the change in momentum of the fluid.")
+    
+#     # Flow Regime Indicator
+#     st.subheader("Flow Regime Indicator")
+#     Re = st.slider("Reynolds Number", 100, 10000000, 500000)
+    
+#     if Re < 2000:
+#         regime = "Laminar"
+#         color = "lightgreen"
+#     elif Re < 4000:
+#         regime = "Transitional"
+#         color = "gold"
+#     else:
+#         regime = "Turbulent"
+#         color = "red"
+        
+#     fig = go.Figure(go.Indicator(
+#         mode="gauge+number",
+#         value=Re,
+#         domain={'x': [0, 1], 'y': [0, 1]},
+#         title={'text': f"Flow Regime: {regime}"},
+#         gauge={
+#             'shape': "bullet",
+#             'axis': {'range': [None, 10000000], 'visible': True},
+#             'threshold': {'line': {'color': "red", 'width': 4}, 'thickness': 0.75, 'value': Re},
+#             'bgcolor': "white",
+#             'steps': [
+#                 {'range': [0, 2000], 'color': "lightgreen"},
+#                 {'range': [2000, 4000], 'color': "gold"},
+#                 {'range': [4000, 10000000], 'color': "red"}]
+#         }
+#     ))
+#     st.plotly_chart(fig)
+    
+#     # Velocity Profile Visualizer
+#     st.subheader("Velocity Profile Visualizer")
+#     diameter_velocity = st.slider("Pipe Diameter (m) for Velocity Profile", 0.01, 1.0, 0.1, key='diameter_velocity')
+#     velocity_center = st.slider("Center Velocity (m/s)", 0.1, 10.0, 2.0, key='velocity_center')
+#     viscosity = st.slider("Fluid Viscosity (Pa·s)", 0.0001, 0.1, 0.001, key='viscosity')
+        
+#     r = np.linspace(0, diameter_velocity/2, 50)
+#     velocity = velocity_center * (1 - (r/(diameter_velocity/2))**2)
+        
+#     fig = go.Figure()
+#     fig.add_trace(go.Scatter(
+#         x=r,
+#         y=velocity,
+#         fill='tozeroy',
+#         name='Velocity Profile'
+#     ))
+#     fig.update_layout(
+#         xaxis_title="Radius (m)",
+#         yaxis_title="Velocity (m/s)",
+#         title="Parabolic Velocity Profile (Laminar Flow)"
+#     )
+#     st.plotly_chart(fig)
+    
+#     # Energy Grade Line Plotter
+#     st.subheader("Energy Grade Line Visualization")
+#     head = st.slider("Total Head (m)", 10, 100, 50)
+#     friction_factor = st.slider("Friction Factor", 0.001, 0.1, 0.02)
+#     pipe_length = st.slider("Pipe Length (m)", 10, 1000, 200)
+#     diameter = st.slider("Pipe Diameter (m)", 0.1, 2.0, 0.5)
+    
+#     x = np.linspace(0, pipe_length, 20)
+#     EGL = head - friction_factor * (x / diameter)
+    
+#     fig = go.Figure()
+#     fig.add_trace(go.Scatter(
+#         x=x,
+#         y=EGL,
+#         mode='lines',
+#         name='Energy Grade Line',
+#         line=dict(color='blue', width=3)
+#     ))
+#     fig.add_trace(go.Scatter(
+#         x=x,
+#         y=EGL - 1,
+#         mode='lines',
+#         name='Hydraulic Grade Line',
+#         line=dict(color='green', width=3, dash='dot')
+#     ))
+#     fig.update_layout(
+#         yaxis_title="Head (m)",
+#         xaxis_title="Pipe Length (m)",
+#         title="Energy Grade Line and Hydraulic Grade Line"
+#     )
+#     st.plotly_chart(fig)
 
 def show_applications():
     st.header("Engineering Applications")
