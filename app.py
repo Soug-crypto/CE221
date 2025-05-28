@@ -656,13 +656,13 @@ def show_dynamics():
     
     # Velocity Profile Visualizer
     st.subheader("Velocity Profile Visualizer")
-    diameter = st.slider("Pipe Diameter (m)", 0.01, 1.0, 0.1)
-    velocity_center = st.slider("Center Velocity (m/s)", 0.1, 10.0, 2.0)
-    viscosity = st.slider("Fluid Viscosity (Pa·s)", 0.0001, 0.1, 0.001)
-    
-    r = np.linspace(0, diameter/2, 50)
-    velocity = velocity_center * (1 - (r/(diameter/2))**2)
-    
+    diameter_velocity = st.slider("Pipe Diameter (m) for Velocity Profile", 0.01, 1.0, 0.1, key='diameter_velocity')
+    velocity_center = st.slider("Center Velocity (m/s)", 0.1, 10.0, 2.0, key='velocity_center')
+    viscosity = st.slider("Fluid Viscosity (Pa·s)", 0.0001, 0.1, 0.001, key='viscosity')
+        
+    r = np.linspace(0, diameter_velocity/2, 50)
+    velocity = velocity_center * (1 - (r/(diameter_velocity/2))**2)
+        
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=r,
