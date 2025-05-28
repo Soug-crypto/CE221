@@ -731,6 +731,46 @@ def show_resources():
             $$
             **Application:** Pressure at depth in static fluids
             """)
+        elif formula == "Continuity Equation":
+            st.markdown(r"""
+            $$
+            \rho_1 A_1 v_1 = \rho_2 A_2 v_2
+            $$
+            **Application:** Mass conservation in fluid flow
+            **(For incompressible fluids:**
+            $$
+            A_1 v_1 = A_2 v_2
+            $$
+            **)**
+            """)
+        elif formula == "Reynolds Number":
+            st.markdown(r"""
+            $$
+            Re = \frac{\rho v L}{\mu}
+            $$
+            **Application:** Dimensionless quantity for flow regime determination
+            **(Where:**
+            - \(\rho\) = Fluid density
+            - \(v\) = Flow velocity
+            - \(L\) = Characteristic length
+            - \(\mu\) = Dynamic viscosity
+            **)**
+            """)
+        elif formula == "Darcy-Weisbach Equation":
+            st.markdown(r"""
+            $$
+            h_f = f \frac{L}{D} \frac{v^2}{2g}
+            $$
+            **Application:** Pressure loss due to friction in pipes
+            **(Where:**
+            - \(h_f\) = Head loss
+            - \(f\) = Friction factor
+            - \(L\) = Pipe length
+            - \(D\) = Pipe diameter
+            - \(v\) = Flow velocity
+            - \(g\) = Gravitational acceleration
+            **)**
+            """)
     
     with tab3:
         st.subheader("🔬 Research Tools")
